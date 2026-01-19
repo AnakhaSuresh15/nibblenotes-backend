@@ -61,9 +61,9 @@ router.post("/login", async (req, res) => {
     // Set refresh token as httpOnly cookie; expires long if remember=true
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000, // ms
+      secure: true,
+      sameSite: "none",
+      maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000,
     };
 
     res.cookie("refreshToken", refreshToken, cookieOptions);
