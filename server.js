@@ -14,8 +14,7 @@ const app = express();
 app.use(
   cors({
     origin:
-      "https://nibblenotes-frontend-p2nlxgex9-anakhasuresh15s-projects.vercel.app" ||
-      "http://localhost:5173 ",
+      "https://nibblenotes-frontend.vercel.app" || "http://localhost:5173 ",
     credentials: true,
   })
 );
