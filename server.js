@@ -30,10 +30,9 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
-app.use("/api", authMiddleware);
-app.use("/api/create-log", createLogRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api", commonRoutes);
+app.use("/api/create-log", authMiddleware, createLogRoutes);
+app.use("/api/dashboard", authMiddleware, dashboardRoutes);
+app.use("/api/common", authMiddleware, commonRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO = process.env.MONGO_URI || "mongodb://localhost:27017/nibblenotes";
