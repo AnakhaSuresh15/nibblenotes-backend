@@ -12,7 +12,12 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 app.use(
-  cors({ origin: "https://your-vercel-app.vercel.app", credentials: true })
+  cors({
+    origin:
+      "https://nibblenotes-frontend-p2nlxgex9-anakhasuresh15s-projects.vercel.app" ||
+      "http://localhost:5173 ",
+    credentials: true,
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
