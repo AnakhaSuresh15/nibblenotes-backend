@@ -23,9 +23,9 @@ function signRefresh(user) {
 // Register
 router.post("/register", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ message: "Missing email or password" });
+    const { firstName, lastName, email, password } = req.body;
+    if (!email || !password || !firstName || !lastName)
+      return res.status(400).json({ message: "Missing required fields" });
 
     const exists = await User.findOne({ email });
     if (exists)
@@ -34,7 +34,12 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ email, passwordHash });
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      passwordHash,
+    });
     return res.status(201).json({ message: "User created", userId: user._id });
   } catch (err) {
     console.error(err);
@@ -71,7 +76,12 @@ router.post("/login", async (req, res) => {
     // Return access token in body (short lived). In production you may want to return nothing and use cookies only.
     return res.json({
       accessToken,
-      user: { id: user._id, email: user.email },
+      user: {
+        id: user._id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -93,7 +103,7 @@ router.post("/refresh", async (req, res) => {
       const accessToken = jwt.sign(
         { id: payload.id },
         process.env.JWT_ACCESS_SECRET,
-        { expiresIn: ACCESS_EXPIRES }
+        { expiresIn: ACCESS_EXPIRES },
       );
 
       // 2. Fetch user from DB
