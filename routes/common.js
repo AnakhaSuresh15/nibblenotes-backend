@@ -63,7 +63,7 @@ router.patch("/edit-log/:logId", async (req, res) => {
       const updatedLog = await Log.findOneAndUpdate(
         { _id: logId, userId },
         { $set: updates },
-        { new: true, runValidators: true }
+        { new: true, runValidators: true },
       );
 
       if (!updatedLog) {
@@ -394,8 +394,9 @@ router.get("/settings", async (req, res) => {
     const user = await User.findById(userId);
     const name = user.firstName + " " + user.lastName;
     const email = user.email;
+    const createdAt = user.createdAt;
 
-    res.status(200).json({ name, email });
+    res.status(200).json({ name, email, createdAt });
   } catch (error) {
     console.error("Error fetching user settings:", error);
     res.status(500).json({ message: "Error fetching user settings" });
@@ -417,6 +418,43 @@ router.post("/update-settings", async (req, res) => {
   } catch (error) {
     console.error("Error updating user settings:", error);
     res.status(500).json({ message: "Error updating user settings" });
+  }
+});
+
+router.patch("/preferences", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const {
+      defaultMoodBefore,
+      defaultMoodAfter,
+      defaultServingSize,
+      themePreference,
+    } = req.body;
+    const updates = {
+      ...(defaultMoodBefore !== undefined && { defaultMoodBefore }),
+      ...(defaultMoodAfter !== undefined && { defaultMoodAfter }),
+      ...(defaultServingSize !== undefined && { defaultServingSize }),
+      ...(themePreference !== undefined && { themePreference }),
+    };
+    await User.findByIdAndUpdate(userId, updates);
+    res.status(200).json({ message: "Preferences saved successfully" });
+  } catch (e) {
+    console.error("Error saving preferences:", e);
+    res
+      .status(500)
+      .json({ message: "Error saving preferences", error: e.message });
+  }
+});
+
+router.patch("/change-email", async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { newEmail } = req.body;
+    await User.findByIdAndUpdate(userId, { email: newEmail });
+    res.status(200).json({ message: "Email changed successfully" });
+  } catch (error) {
+    console.error("Error changing email:", error);
+    res.status(500).json({ message: "Error changing email" });
   }
 });
 

@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  preferences: {
+    defaultMoodBefore: { type: String, default: "content" },
+    defaultMoodAfter: { type: String, default: "content" },
+    defaultServingSize: { type: Number, default: 1 },
+    themePreference: { type: String, default: "system" },
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);

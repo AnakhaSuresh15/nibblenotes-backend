@@ -8,6 +8,7 @@ const authRoutes = require("./routes/auth");
 const commonRoutes = require("./routes/common");
 const createLogRoutes = require("./routes/createLog");
 const dashboardRoutes = require("./routes/dashboard");
+const aiRoutes = require("./routes/ai");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
@@ -16,7 +17,7 @@ app.use(
     origin:
       "https://nibblenotes-frontend.vercel.app" || "http://localhost:5173 ",
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use(cookieParser());
@@ -26,13 +27,14 @@ app.use(
   cors({
     origin: process.env.FRONTEND_ORIGIN || "http://localhost:5173",
     credentials: true, // allow cookies
-  })
+  }),
 );
 
 app.use("/api/auth", authRoutes);
 app.use("/api/create-log", authMiddleware, createLogRoutes);
 app.use("/api/dashboard", authMiddleware, dashboardRoutes);
 app.use("/api/common", authMiddleware, commonRoutes);
+app.use("/api/ai", authMiddleware, aiRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO = process.env.MONGO_URI || "mongodb://localhost:27017/nibblenotes";
